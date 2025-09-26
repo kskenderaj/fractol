@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: kskender <kskender@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/08/05 11:34:30 by kskender          #+#    #+#              #
-#    Updated: 2025/08/05 11:35:03 by kskender         ###   ########.fr        #
+#    Created: 2025/09/26 19:23:03 by kskender          #+#    #+#              #
+#    Updated: 2025/09/26 19:23:12 by kskender         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,15 @@ LIBFT_LIB := $(LIBFT_DIR)/libft.a
 
 PRINTF_DIR := include/ft_printf
 PRINTF_LIB := $(PRINTF_DIR)/libftprintf.a
+
+# Detect OS for MLX42 flags
+UNAME_S := $(shell uname -s)
+
+ifeq ($(UNAME_S), Darwin) # macOS
+	MLX_FLAGS := -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
+else # Linux
+	MLX_FLAGS := -ldl -lglfw -pthread -lm
+endif
 
 # Source files
 SRCS := src/main.c \
@@ -54,9 +63,7 @@ OBJS := src/main.o \
 all: $(LIBFT_LIB) $(PRINTF_LIB) $(MLX_LIB) $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT_LIB) $(PRINTF_LIB)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT_LIB) $(PRINTF_LIB) $(MLX_LIB) \
-		-framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo \
-		-o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT_LIB) $(PRINTF_LIB) $(MLX_LIB) $(MLX_FLAGS) -o $(NAME)
 
 # Compile each object file explicitly (NO pattern rules)
 src/main.o: src/main.c include/fractol.h
